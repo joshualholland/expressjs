@@ -1,28 +1,42 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 const fs = require('fs');
 
 let app = express();
+let router = express.Router();
 
-app.use((req, res, next) => {
+router.use((req, res, next) => {
     console.log(req.originalUrl);
     next();
 });
 
-app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post('/contact-form', (req, res) => {
-    fs.appendFileSync('form.json', req.body.email)
-    fs.appendFileSync('form.json', req.body.name)
-    res.send('Thanks for sumbitting')
+app.use('/', router);
+
+app.route('/contact-form')
+
+    .post((req, res) => {
+    let userName = req.body.name
+    let userEmail = req.body.email
+
+    let userObject = {
+        name: userName,
+        email: userEmail
+    }
+
+    fs.writeFile(path.join(__dirname, './form.json'), JSON.stringify(userObject, null, 2), (err) => {
+        if (err) console.log(err)
+    });
+
+    res.send('Thanks for submitting!')
 });
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/', (req, res, next) => {
-    res.send('Hello from the server side!')
-});
+// app.get('/', (req, res, next) => {
+//     res.send('Hello from the server side!')
+// });
 
 app.listen(3000);
+
 
