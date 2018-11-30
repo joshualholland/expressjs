@@ -1,7 +1,8 @@
 // alert('Wassup')
 
 // Jquery for ajax
-$('button').click(() => {
+$('button').click((e) => {
+    e.preventDefault();
     let name = $('#name').val();
     let email = $('#email').val();
     let userObject = {
@@ -15,7 +16,8 @@ $('button').click(() => {
         data: userObject
     })
     .then(res => {
-        $('/contact-form').text(res)
+        console.log(res)
     })
+    window.location.href = '/formsubmissions'
 });
 
